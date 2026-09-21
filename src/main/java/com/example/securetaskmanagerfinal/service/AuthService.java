@@ -4,20 +4,23 @@ import com.example.securetaskmanagerfinal.dto.LoginReq;
 import com.example.securetaskmanagerfinal.dto.RegisterRequest;
 import com.example.securetaskmanagerfinal.entity.User;
 import com.example.securetaskmanagerfinal.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     public User registerUser(RegisterRequest request){
         if(userRepository.findByEmail(request.getEmail()).isPresent()){
@@ -32,14 +35,32 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public Authentication login(LoginReq request) {
+//    public Authentication login(LoginReq request) {
+//
+//        Authentication authentication =
+//                new UsernamePasswordAuthenticationToken(
+//                        request.getEmail(),
+//                        request.getPassword()
+//                );
+//
+//        return authenticationManager.authenticate(authentication);
+//    }
 
+
+
+
+    public String login(LoginReq loginReq){
         Authentication authentication =
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                loginReq.getEmail(),
+                                loginReq.getPassword()
+                        )
                 );
+        UserDetails userDetails =
+                (UserDetails) authentication.getPrincipal();
 
-        return authenticationManager.authenticate(authentication);
+        return jwtService.generateToken(userDetails);
     }
+
 }

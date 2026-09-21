@@ -29,7 +29,7 @@ public class JwtService {
         this.expiration = expiration;
     }
     
-    public String generateToken(UserDetails userDetails) {
+    public   String generateToken(UserDetails userDetails) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + expiration);
         return Jwts.builder()

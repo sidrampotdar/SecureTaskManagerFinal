@@ -4,6 +4,7 @@ import com.example.securetaskmanagerfinal.dto.LoginReq;
 import com.example.securetaskmanagerfinal.dto.RegisterRequest;
 import com.example.securetaskmanagerfinal.entity.User;
 import com.example.securetaskmanagerfinal.service.AuthService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AuthController {
     private final AuthService authService;
 
@@ -21,15 +22,21 @@ public class AuthController {
     public User registerUser(@RequestBody RegisterRequest request) {
         return authService.registerUser(request);
     }
-    @PostMapping("/login")
+//    @PostMapping("/login")
+//    public String login(
+//            @RequestBody LoginReq request
+//    ) {
+//
+//        Authentication authentication =
+//                authService.login(request);
+//
+//        return "Login successful for: "
+//                + authentication.getName();
+//    }
+@PostMapping("/login")
     public String login(
             @RequestBody LoginReq request
-    ) {
-
-        Authentication authentication =
-                authService.login(request);
-
-        return "Login successful for: "
-                + authentication.getName();
+    ){
+        return authService.login(request);
     }
 }
