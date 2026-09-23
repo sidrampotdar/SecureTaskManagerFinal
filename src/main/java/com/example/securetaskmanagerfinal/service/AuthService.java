@@ -2,7 +2,9 @@ package com.example.securetaskmanagerfinal.service;
 
 import com.example.securetaskmanagerfinal.dto.LoginReq;
 import com.example.securetaskmanagerfinal.dto.RegisterRequest;
+import com.example.securetaskmanagerfinal.entity.Role;
 import com.example.securetaskmanagerfinal.entity.User;
+import com.example.securetaskmanagerfinal.repository.RoleRepository;
 import com.example.securetaskmanagerfinal.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RoleRepository roleRepository;
 
     public User registerUser(RegisterRequest request){
         if(userRepository.findByEmail(request.getEmail()).isPresent()){
@@ -32,6 +35,12 @@ public class AuthService {
                 request.getEmail(),
                 hashedPassword
         );
+        Role userRole =
+                roleRepository
+                        .findByName("USER")
+                        .orElseThrow();
+
+        user.getRoles().add(userRole);
         return userRepository.save(user);
     }
 

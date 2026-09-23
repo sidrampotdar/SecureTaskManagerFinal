@@ -1,15 +1,16 @@
 package com.example.securetaskmanagerfinal.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class User {
     @Id
@@ -27,4 +28,11 @@ public class User {
         this.password = password;
 
     }
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 }
