@@ -3,9 +3,12 @@ package com.example.securetaskmanagerfinal.controllers;
 import com.example.securetaskmanagerfinal.dto.LoginReq;
 import com.example.securetaskmanagerfinal.dto.RegisterRequest;
 import com.example.securetaskmanagerfinal.entity.User;
+import com.example.securetaskmanagerfinal.entity.dto.AuthResponse;
+import com.example.securetaskmanagerfinal.entity.dto.RefreshReq;
 import com.example.securetaskmanagerfinal.service.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,9 +37,23 @@ public class AuthController {
 //                + authentication.getName();
 //    }
 @PostMapping("/login")
-    public String login(
+    public AuthResponse login(
             @RequestBody LoginReq request
     ){
         return authService.login(request);
+    }
+    @PostMapping("/refresh")
+    public AuthResponse refresh(
+            @RequestBody RefreshReq request
+    ) {
+        return authService.refresh(
+                request.refreshToken()
+        );
+    }
+    public ResponseEntity<Void> logout(@RequestBody
+                                       RefreshReq   refreshReq
+                                       ) {
+        authService.logout(refreshReq.refreshToken());
+        return  ResponseEntity.noContent().build();
     }
 }
